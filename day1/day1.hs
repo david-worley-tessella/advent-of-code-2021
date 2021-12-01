@@ -5,20 +5,17 @@ import Data.Typeable
 -- Compare each value in an array to its previous value
 -- Returns a list of tuples containing the (value, increased, decreased, no-change)
 compareValues :: (Ord a, Num a) => [a] -> [(a, Int, Int, Int)]
-compareValues [] = []
-compareValues [x] = []
 compareValues (x:y:xs)
   | x == 0 = [(y, 0, 0, 0)] ++ compareValues ([y]++xs)
   | y > x = [(y, 1, 0, 0)] ++ compareValues ([y]++xs)
   | y < x = [(y, 0, 1, 0)] ++ compareValues ([y]++xs)
   | y == x = [(y, 0, 0, 1)] ++ compareValues ([y]++xs)
   | otherwise = compareValues ([y]++xs)
+compareValues _ = []
 
 -- Compare the sum of windows of values
 -- i.e. in the array: [x, y, z, a, ...], compare x+y+z vs y+z+a
 compareValuesWithWindow :: (Ord a, Num a) => [a] -> [(a, Int, Int, Int)]
-compareValuesWithWindow [] = []
-compareValuesWithWindow [x] = []
 compareValuesWithWindow (x:y:z:a:xs)
   | x == 0 = [(secondSum, 0, 0, 0)] ++ compareValuesWithWindow ([y,z,a]++xs)
   | secondSum > firstSum = [(secondSum, 1, 0, 0)] ++ compareValuesWithWindow ([y,z,a]++xs)
@@ -27,7 +24,7 @@ compareValuesWithWindow (x:y:z:a:xs)
   | otherwise = compareValuesWithWindow ([y,z,a]++xs)
   where secondSum = (y + z + a)
         firstSum = (x + y + z)
-compareValuesWithWindow (x:xs) = []
+compareValuesWithWindow _ = []
 
 -- Choose the correct function for the task (1 or 2)
 compareValuesForTask :: (Ord a, Num a) => (String) -> [a] -> [(a, Int, Int, Int)]
@@ -65,8 +62,7 @@ main = do
   let listOfInts = map (read::String->Int) linesOfFile
 
   -- Prepending the "0" to the list is a bit of a hack but it makes our pattern matching in compareValues easier
-  -- let comparedContents = compareValues ([0] ++ listOfInts) -- Task part 1
-  let comparedContents = compareValuesForTask task ([0] ++ listOfInts) -- Task part 2
+  let comparedContents = compareValuesForTask task ([0] ++ listOfInts)
   
   -- Map the tuples back to Strings
   let listOfStrings = map mapTuple comparedContents

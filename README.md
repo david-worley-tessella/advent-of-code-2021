@@ -12,6 +12,7 @@ To run a file:
 
 ```sh
 cd day1
+runhaskell day1.hs <task number>
 runhaskell day1.hs 1
 ```
 
